@@ -105,8 +105,17 @@ int main()
           
     	  ukf.ProcessMeasurement(meas_package_R);
 
-	  target_x = ukf.x_[0];
-	  target_y = ukf.x_[1];
+    	  /**
+    	   * Using CTRV model to predict target x,y ahead of time
+    	   */
+    	  double x = ukf.x_[0];
+    	  double y = ukf.x_[1];
+    	  double v = ukf.x_[2];
+    	  double yaw = ukf.x_[3];
+    	  double dt = 1.0;
+
+          target_x = x + v * dt * cos(yaw);
+          target_y = y + v * dt * sin(yaw);
 
     	  double heading_to_target = atan2(target_y - hunter_y, target_x - hunter_x);
     	  while (heading_to_target > M_PI) heading_to_target-=2.*M_PI; 
